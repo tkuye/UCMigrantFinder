@@ -3,23 +3,22 @@ Module for mentors with certain parameters to find
 their ideal mentees as they come into the country
 """
 
-from typing import List, Tuple, Dict
+from typing import List
+from matching.user import User
+from matching.migrant import Migrant
 
-class Mentor(object):
+class Mentor(User):
 	"""
-	Class for a mentor instantiated when data is processed from a user.
+	Class for a mentor object.
 	"""
 
 	def __init__(self):
 		"""
-		Inititiation for the mentor class.
+		Initiates the class for a Mentors
 		"""
-		self.country: str = ""
-		self.name: str = ""
-		self.description:  str = ""
-		self.languages : List[str]  = []
-		self.location: Tuple[float] = ()
-		self.demographics: Dict[str : str] = {}
-		self.interests_keys: List[str] = []
+		super(Mentor, self).__init__()
 
-		
+		self.max_matches = 10
+		self.matches: List[Migrant] = []
+
+	
