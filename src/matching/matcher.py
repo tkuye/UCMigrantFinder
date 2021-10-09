@@ -17,7 +17,7 @@ class Matcher(object):
 		self.mentors: Dict[str, Mentor] = {}
 		self.migrants: List[Migrant] = []
 
-	def find_matches(self, mentor: Mentor) -> List[Migrant]:
+	def find_matches(self, mentor: Mentor) -> None:
 		"""
 		Finds matches based on certain criteria for a given Mentor
 		Args:
@@ -42,16 +42,15 @@ class Matcher(object):
 		self.__add_migrants(m2, migrants, existing)
 		self.__add_migrants(m3, migrants, existing)
 
+		mentor.add_matches(migrants)
 
-		return migrants
 	
 	def __add_migrants(self, migrants: List[Migrant], total_migrants:List[Migrant], existing: dict):
-		
 		for item in migrants:
 			if item in existing:
 				ItemNumber = existing[item]
 			else:
-				migrants.append(item)
+				total_migrants.append(item)
 				existing[item] = ItemNumber = len(migrants) - 1
 
 			
@@ -137,3 +136,4 @@ class Matcher(object):
 		return findable_migrants
 
 	
+

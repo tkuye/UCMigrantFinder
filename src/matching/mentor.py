@@ -19,6 +19,16 @@ class Mentor(User):
 		super(Mentor, self).__init__()
 
 		self.max_matches = 10
-		self.matches: List[Migrant] = []
+		self.__matches: List[Migrant] = []
+		self.match: Migrant = None
 
-	
+	def add_matches(self, migrants: List[Migrant]):
+		"""
+		Adds matches to a following mentor
+		Args:
+			migrants (List[Migrant]): The list of migrants to add
+		"""
+		i = 0 
+		while len(self.__matches) <= self.max_matches:
+			self.__matches.append(migrants[i])
+			i += 1
