@@ -23,6 +23,7 @@ class User(object):
 		self.__photo_url: str = ""
 		self.match = ""
 		self.id: str = ""
+		self.room_id: str = ""
 
 	def get_country(self) -> str:
 		"""Gets the country of the user
@@ -242,3 +243,9 @@ class User(object):
 
 	def get_match(self):
 		return self.match
+
+	def get_room(self):
+		return self.__room
+	
+	def set_room(self, room):
+		self.__room = room

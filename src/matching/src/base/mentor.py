@@ -51,6 +51,7 @@ class Mentor(User):
 			"demographics": self.get_demographics(),
 			"interests": self.get_interests(),
 			"match": self.get_match(),
+			"room": self.get_room(),
 		}
 		return mentor
 
@@ -60,7 +61,7 @@ class Mentor(User):
 		Args:
 			mentor_dict (dict): The dictionary to convert
 		"""
-
+		
 		mentor = Mentor()
 		mentor.set_country(mentor_dict.get("country"))
 		mentor.set_name(mentor_dict.get("name"))
@@ -69,3 +70,4 @@ class Mentor(User):
 		mentor.set_location(mentor_dict.get("location"))
 		mentor.set_interests(mentor_dict.get("interests"))
 		mentor.set_match(mentor_dict.get("match"))
+		mentor.set_room(mentor_dict.get("room"))

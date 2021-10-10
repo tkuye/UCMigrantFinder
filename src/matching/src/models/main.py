@@ -1,5 +1,7 @@
 import pymongo 
 from src.base.matcher import Matcher
+import random
+import string
 
 class Database(object):
 	"""
@@ -13,7 +15,6 @@ class Database(object):
 		self.mentors = self._db["mentors"]
 		self.matcher = self.__init_matcher()
 		
-
 	def __init_matcher(self):
 		"""
 		Initiates the matcher class
@@ -101,6 +102,7 @@ class Database(object):
 		"""
 		mentor = self.matcher.get_mentor(mentor_id)
 		mentor.set_match(migrant_id)
+
 		self.mentors.update_one(Database.id_query(mentor_id), {"match": migrant_id})
 
 	def select_migrant(self, mentor_id, migrant_id):
@@ -110,12 +112,23 @@ class Database(object):
 			mentor_id (str)
 			migrant_id (str)
 		"""
-
+	
 		migrant = self.matcher.get_migrant(migrant_id)
+		mentor = self.matcher.get_mentor(mentor_id)
 		migrant.set_match(mentor_id)
+		room = Database.random_char(10)
+		migrant.set_room(room)
+		mentor.set_room(room)
+		
 		self.migrants.update_one(Database.id_query(migrant_id), {"match": mentor_id})
+		self.mentors.update_one(Database.id_query(mentor_id), {"room": room})
+		self.migrants.update_one(Database.id_query(migrant_id), {"room": room})
 
 	@staticmethod
 	def id_query(id:str):
 		return {"_id": id}
 	
+
+	@staticmethod
+	def random_char(y):
+		return ''.join(random.choice(string.ascii_letters) for x in range(y))
