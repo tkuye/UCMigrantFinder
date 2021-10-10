@@ -30,8 +30,6 @@ class Matcher:
 		migrants = list()
 		# If this number is less than the max available then we must return
 		
-		
-		
 		# The names correspond to the weights of each group of migrants
 		m0 = self.__find_matches_on_location(mentor.get_location(), usable_migrants)
 		m1 = self.__find_matches_on_language(mentor.get_languages(), usable_migrants)

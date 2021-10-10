@@ -45,7 +45,7 @@ const SignupMentor: React.FC<SignupMentorProps> = () => {
 			}
 			axios.post("http://127.0.0.1:5000/new-mentor", data).then((res:any) => {
 				localStorage.setItem("id", res.data.id);
-				localStorage.setItem("status", res.data.status);
+				localStorage.setItem("status", "mentor");
 				history.push("/home-mentors");
 			})
 		})

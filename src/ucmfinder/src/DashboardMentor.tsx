@@ -18,8 +18,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
 		setMentorId(localStorage.getItem("id"))
 		
 			axios.get(`http://127.0.0.1:5000/get-migrants/${localStorage.getItem("id")}`).then((response:any) => {
-				setMigrants(response.data.map((data:any) => {
-					return <li onClick={() => selectMigrant(data._id)}>
+			console.log(response.data);	
+			setMigrants(response.data.map((data:any) => {
+					return <li onClick={() => selectMigrant(data.id)}>
 						<h3>{data.name}</h3>
 						<p>{data.description}</p>
 						<p>{data.languages.map((data:any) => {
@@ -29,7 +30,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 				}))	
 			})
 		
-	}, [])
+	}, [mentorId, status])
 
 	const selectMigrant = (id:string) => {
 		axios.post(`http://127.0.0.1:5000/select-migrant/${mentorId}/${id}`).then((response:any) => {

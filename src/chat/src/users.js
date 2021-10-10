@@ -31,6 +31,7 @@ module.exports = {
 		await chats.insertOne(payload).catch(err => {
 			console.error(err);
 		})
+		
 		await client.close();
 	},
 
@@ -39,10 +40,10 @@ module.exports = {
 		await client.connect();
 		let db = await client.db("ucmfinder");
 		let chats = await db.collection("chats");
-		await chats.find({room_id: room_id}, function (err, result) {
-			if (err) throw err
-			return callback(result)
-		})
+		let results = await chats.find({room: room_id})
+		
+		return results.toArray();
+		
 		
 	},
 

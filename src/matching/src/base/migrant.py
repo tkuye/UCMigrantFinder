@@ -59,6 +59,7 @@ class Migrant(User):
 			"status": self.get_status(),
 			"match": self.get_match(),
 			"room": self.get_room(),
+			"id": self.id
 		}
 
 		return migrant
@@ -82,5 +83,5 @@ class Migrant(User):
 		migrant.set_interests(migrant_dict.get("interests"))
 		migrant.set_match(migrant_dict.get("match"))
 		migrant.set_room(migrant_dict.get("room"))
-
+		migrant.id = str(migrant_dict.get("_id"))
 		return migrant

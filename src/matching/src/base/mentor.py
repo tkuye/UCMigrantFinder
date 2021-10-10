@@ -52,6 +52,7 @@ class Mentor(User):
 			"interests": self.get_interests(),
 			"match": self.get_match(),
 			"room": self.get_room(),
+			"id":self.id,
 		}
 		return mentor
 
@@ -71,5 +72,6 @@ class Mentor(User):
 		mentor.set_interests(mentor_dict.get("interests"))
 		mentor.set_match(mentor_dict.get("match"))
 		mentor.set_room(mentor_dict.get("room"))
+		mentor.id = str(mentor_dict.get("_id"))
 	
 		return mentor

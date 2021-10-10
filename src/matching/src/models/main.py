@@ -15,8 +15,10 @@ class Database(object):
 		self.migrants = self._db["migrants"]
 		self.mentors = self._db["mentors"]
 		self.users = self._db["users"]
-		self.matcher = self.__init_matcher()
 		
+		self.matcher = self.__init_matcher()
+
+
 	def __init_matcher(self):
 		"""
 		Initiates the matcher class
@@ -28,6 +30,7 @@ class Database(object):
 		matcher.set_mentors(self.mentors.find())
 		matcher.set_migrants(self.migrants.find())
 		print(matcher.migrants)
+		
 		return matcher
 
 	def __init_db(self, db_name):
@@ -126,7 +129,7 @@ class Database(object):
 		mentor = self.matcher.get_mentor(mentor_id)
 		mentor.set_match(migrant_id)
 
-		self.mentors.update_one(Database.id_query(mentor_id), {"match": migrant_id})
+		self.mentors.replace_one(Database.id_query(mentor_id), {"match": migrant_id})
 
 	def get_matched_mentors(self, migrant_id):
 		mentors = []
@@ -142,18 +145,20 @@ class Database(object):
 			mentor_id (str)
 			migrant_id (str)
 		"""
-	
-		migrant = self.matcher.get_migrant(migrant_id)
-		mentor = self.matcher.get_mentor(mentor_id)
-		migrant.set_match(mentor_id)
+
+		migrant = self.matcher.get_migrant(mentor_id)
+		mentor = self.matcher.get_mentor(migrant_id)
 		room = Database.random_char(10)
-		migrant.set_room(room)
+		if migrant is None:
+			migrant.set_match(mentor_id)
+		
+			migrant.set_room(room)
+		
 		mentor.set_room(room)
 		
-
-		self.migrants.update_one(Database.id_query(migrant_id), {"match": mentor_id})
-		self.mentors.update_one(Database.id_query(mentor_id), {"room": room})
-		self.migrants.update_one(Database.id_query(migrant_id), {"room": room})
+		self.migrants.replace_one(Database.id_query(migrant_id), {"match": mentor_id})
+		self.mentors.replace_one(Database.id_query(mentor_id), {"room": room})
+		self.migrants.replace_one(Database.id_query(migrant_id), {"room": room})
 		return room 
 
 	@staticmethod

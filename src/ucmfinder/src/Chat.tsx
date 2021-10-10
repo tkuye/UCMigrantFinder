@@ -10,24 +10,24 @@ interface ChatProps {
 }
 const socket = io("");
 const Chat: React.FC<ChatProps> = () => {
-	const [chats, setChats] = useState<any>()
+	const [chats, setChats] = useState<Array<any> | null>(null)
 	const [chat, setChat] = useState<string>("")
 	const [matchName, setMatchName] = useState<string>("")
 
 	useEffect(() => {
 		
-
-		axios.get("http://localhost:3001/chat-data", {
+		axios.get(`http://localhost:3001/chat-data/`, {
 			params:{
 				room_id: localStorage.getItem("room")}
 		}).then((result:any) => {
 			let data: Array<any> = result.data;
-			data.map((data: any) => {
-				return <li>
-					{data.message}
-				</li>
-			})
-			setChats(data)
+
+			setChats(data.map((d: any) => {
+				return (<li>
+					{d.message}
+				</li>)
+			}))
+			
 		})
 
 		let status = localStorage.getItem("status");
@@ -53,7 +53,7 @@ const Chat: React.FC<ChatProps> = () => {
 			setChats((chat:any) => [...chat, converted_message])
 		})
 
-	}, [])
+	}, [chats, matchName])
 
 	const submitMessage = () => {
 		
@@ -62,11 +62,11 @@ const Chat: React.FC<ChatProps> = () => {
 			time: Date.now(),
 			room: localStorage.getItem("room")
 		}
-		setChats((chatse:any) => [...chatse, <li>chat</li>])
+		setChats((chatse:any) => [...chatse, <li>{chat}</li>])
 		newSocket.emit("message", message);
 	}
 		return (<div>
-			<h4>{matchName}</h4>
+			<h2>{matchName}</h2>
 			<ul>
 				{chats?.length === 0? "There are no chats to display": chats}
 			</ul>
