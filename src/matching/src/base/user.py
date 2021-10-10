@@ -21,7 +21,8 @@ class User(object):
 		self.__demographics: Dict[str: str] = {}
 		self.__interests_keys: List[str] = []
 		self.__photo_url: str = ""
-
+		self.match = ""
+		self.id: str = ""
 
 	def get_country(self) -> str:
 		"""Gets the country of the user
@@ -72,6 +73,22 @@ class User(object):
 		"""
 		return language in self.__languages
 
+	def set_languages(self, languages:List[str]):
+		"""Sets the languages for a user
+
+		Args:
+			languages (List[str]): languages
+		"""
+		self.__languages = languages.copy()
+
+	def set_demographics(self, demographics:Dict[str, str]):
+		"""
+		Sets the demographics for a user
+		Args:
+			demographics (Dict[str, str]): demographics
+		"""
+		self.__demographics = demographics.copy()
+
 
 	def set_language(self, language:str) -> None:
 		"""
@@ -99,6 +116,14 @@ class User(object):
 		"""
 		return self.__location
 
+	def set_location(self, location:Tuple) -> None:
+		"""
+		Sets the location for the user
+		Args:
+			location (Tuple): the location tuple
+		"""
+		self.__location = location
+	
 	def get_lat(self) -> float:
 		"""Gets a user's latitude
 
@@ -157,6 +182,15 @@ class User(object):
 		if interest not in self.__interests_keys:
 			self.__interests_keys.append(interest)
 
+	def set_interests(self, interests: List[str]) -> None:
+		"""
+		Sets the interests for a certain user
+
+		Args:
+			interests (List[str]): interests
+		"""
+		if interests is not None:
+			self.__interests_keys = interests.copy()
 
 	def get_demographic(self, demographic) -> str:
 		"""
@@ -201,3 +235,10 @@ class User(object):
 		"""
 		return self.__photo_url
 
+	def set_match(self, match:str): 
+		"""Sets the user
+		"""
+		self.match = match
+
+	def get_match(self):
+		return self.match

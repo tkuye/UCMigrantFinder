@@ -2,10 +2,10 @@
 The matching system itself
 """
 from typing import Dict, List, Tuple
-from matching.mentor import Mentor
-from matching.migrant import Migrant
+from .mentor import Mentor
+from .migrant import Migrant
 
-class Matcher(object):
+class Matcher:
 	"""
 	Class for a matcher system
 	"""
@@ -15,7 +15,7 @@ class Matcher(object):
 		Initial class constructor for the matcher class
 		"""
 		self.mentors: Dict[str, Mentor] = {}
-		self.migrants: List[Migrant] = []
+		self.migrants: Dict[str, Migrant] = {}
 
 	def find_matches(self, mentor: Mentor) -> None:
 		"""
@@ -44,7 +44,31 @@ class Matcher(object):
 
 		mentor.add_matches(migrants)
 
+	def get_mentor(self, mentor_id: str) -> Mentor:
+		"""
+		Gets a given mentor
+		Args:
+			mentor_id (str): the given mentor id
+
+		Returns:
+			Mentor: The class for a mentor
+		"""
+
+		return self.mentors.get(mentor_id)
 	
+
+	def get_migrant(self, migrant_id: str) -> Migrant:
+		"""
+		Gets a given migrant
+
+		Args:
+			migrant_id (str): The migrant id
+
+		Returns:
+			Migrant: the class for the migrant
+		"""
+		return self.migrants.get(migrant_id)
+
 	def __add_migrants(self, migrants: List[Migrant], total_migrants:List[Migrant], existing: dict):
 		for item in migrants:
 			if item in existing:
@@ -81,7 +105,7 @@ class Matcher(object):
 		"""
 		findable_migrants = []
 
-		for migrant in self.migrants:
+		for migrant in self.migrants.values():
 			if migrant.get_country() == country:
 				findable_migrants.append(migrant)
 		
@@ -117,8 +141,6 @@ class Matcher(object):
 
 		return list(findable_migrants)
 
-
-
 	def __find_matches_on_location(self, location: Tuple[float], possible_migrants:List[Migrant], distance: float = 1):
 		"""Private function for finding migrants within a given location
 		Defaulted to one latitudinal point
@@ -135,5 +157,29 @@ class Matcher(object):
 
 		return findable_migrants
 
+	def add_mentor(self, mentor: Dict):
+		"""
+		Adds mentor to the matcher system
+		"""
+		self.mentors[mentor.get('_id')] = Mentor.dict_to_mentor(mentor)
 	
+	def add_migrant(self, migrant: Dict):
+		"""
+		Adds migrant to the matcher system
+		"""
+		self.migrants[migrant.get('_id')] = Migrant.dict_to_migrant(migrant)
 
+	
+	def set_mentors(self, mentors: List[Dict]):
+		"""
+		Sets the mentors for the matcher system
+		"""
+		for mentor in mentors:
+			self.add_mentor(mentor)
+	
+	def set_migrants(self, migrants: List[Dict]):
+		"""
+		Sets the migrants for the matcher system
+		"""
+		for migrant in migrants:
+			self.add_migrant(migrant)
