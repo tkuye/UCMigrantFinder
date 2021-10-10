@@ -56,7 +56,6 @@ class Matcher:
 
 		return self.mentors.get(mentor_id)
 	
-
 	def get_migrant(self, migrant_id: str) -> Migrant:
 		"""
 		Gets a given migrant
