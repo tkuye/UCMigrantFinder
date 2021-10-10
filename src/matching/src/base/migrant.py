@@ -20,7 +20,8 @@ class Migrant(User):
 		"""
 		Setter for our countries
 		"""
-		self.__countries = countries.copy()
+		if countries:
+			self.__countries = countries.copy()
 	
 	def get_countries(self):
 		"""
@@ -58,6 +59,7 @@ class Migrant(User):
 			"status": self.get_status(),
 			"match": self.get_match(),
 			"room": self.get_room(),
+			"id": self.id
 		}
 
 		return migrant
@@ -71,6 +73,7 @@ class Migrant(User):
 		Args:
 			migrant_dict (dict): the dictionary to convert
 		"""
+
 		migrant = Migrant()
 		migrant.set_countries(migrant_dict.get("countries"))
 		migrant.set_name(migrant_dict.get("name"))
@@ -80,3 +83,5 @@ class Migrant(User):
 		migrant.set_interests(migrant_dict.get("interests"))
 		migrant.set_match(migrant_dict.get("match"))
 		migrant.set_room(migrant_dict.get("room"))
+		migrant.id = str(migrant_dict.get("_id"))
+		return migrant

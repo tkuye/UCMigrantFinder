@@ -2,11 +2,10 @@ const {MongoClient} = require('mongodb');
 
 const url = "mongodb://localhost:27017"
 const client = new MongoClient(url);
-
+const users = new Map()
 module.exports = {
-	users = new Map(),
 	
-	getRoom  = async (user_id, callback) => {
+	getRoom : async (user_id, callback) => {
 		await client.connect();
 		let db = await client.db("ucmfinder");
 		let migrants = db.collection("migrants");
@@ -25,35 +24,38 @@ module.exports = {
 	},
 
 
-	addPayload = async (payload) => {
+	addPayload:  async (payload) => {
 		await client.connect();
 		let db = await client.db("ucmfinder");
-		let chats = db.collection("chats");
-		chats.insertOne(payload).catch(err => {
+		let chats = await db.collection("chats");
+		await chats.insertOne(payload).catch(err => {
 			console.error(err);
 		})
-		client.close();
+		
+		await client.close();
 	},
 
-	getChatData = async (room_id, callback) => {
+	getChatData : async (room_id, callback) => {
+		
 		await client.connect();
 		let db = await client.db("ucmfinder");
-		let chats = db.collection("chats");
-		chats.find({room_id: room_id}, function (err, result) {
-			if (err) throw err
-			return callback(result)
-		})
+		let chats = await db.collection("chats");
+		let results = await chats.find({room: room_id})
+		
+		return results.toArray();
+		
+		
 	},
 
-	addUser = (socket_id, room) => {
-		users[socket_id] = room;
+	addUser : (socket_id, room) => {
+		users.set(socket_id, room)
 	},
 
-	getUser = (socket_id) => {
-		return users[socket_id];
+	getUser: (socket_id) => {
+		return users.get(socket_id);
 	},
 
-	removeUser = (socket_id) => {
+	removeUser : (socket_id) => {
 		users.delete(socket_id);
 	}
 
