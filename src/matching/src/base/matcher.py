@@ -24,16 +24,17 @@ class Matcher:
 			Mentor ([type]): [description]
 		"""
 		usable_migrants = self.__find_matches_on_country(mentor.get_country())
+		
 
 		existing = dict()
 		migrants = list()
 		# If this number is less than the max available then we must return
-		if len(usable_migrants) < mentor.max_matches:
-			return usable_migrants
+		
+		
 		
 		# The names correspond to the weights of each group of migrants
 		m0 = self.__find_matches_on_location(mentor.get_location(), usable_migrants)
-		m1 = self.__find_matches_on_language(mentor.get_language(), usable_migrants)
+		m1 = self.__find_matches_on_language(mentor.get_languages(), usable_migrants)
 		m2 = self.__find_matches_on_interest(mentor.get_interests(), usable_migrants)
 		m3 = self.__find_matches_on_demographic(mentor.get_demographics(), usable_migrants)
 		
@@ -105,8 +106,10 @@ class Matcher:
 		findable_migrants = []
 
 		for migrant in self.migrants.values():
-			if migrant.get_country() == country:
-				findable_migrants.append(migrant)
+			countries = migrant.get_countries()
+			for country in countries:
+				if country == country:
+					findable_migrants.append(migrant)
 		
 		return findable_migrants
 
@@ -135,7 +138,7 @@ class Matcher:
 
 		for migrant in possible_migrants:
 			for language in languages:
-				if migrant.get_language() == language:
+				if migrant.get_language(language):
 					findable_migrants.add(migrant)
 
 		return list(findable_migrants)
@@ -148,10 +151,11 @@ class Matcher:
 			possible_migrants (List[Migrant]): list of possible_migrants
 			distance (float, optional): [description]. Defaults to 1.
 		"""
-	
+		if location is None:
+			return possible_migrants
 		findable_migrants = []
 		for migrant in possible_migrants:
-			if migrant.get_lat() -location[0] < distance and migrant.get_long() - location[1] < distance:
+			if migrant.get_lat() - location[0] < distance and migrant.get_long() - location[1] < distance:
 				findable_migrants.append(migrant)
 
 		return findable_migrants
@@ -160,13 +164,13 @@ class Matcher:
 		"""
 		Adds mentor to the matcher system
 		"""
-		self.mentors[mentor.get('_id')] = Mentor.dict_to_mentor(mentor)
+		self.mentors[str(mentor.get('_id'))] = Mentor.dict_to_mentor(mentor)
 	
 	def add_migrant(self, migrant: Dict):
 		"""
 		Adds migrant to the matcher system
 		"""
-		self.migrants[migrant.get('_id')] = Migrant.dict_to_migrant(migrant)
+		self.migrants[str(migrant.get('_id'))] = Migrant.dict_to_migrant(migrant)
 
 	
 	def set_mentors(self, mentors: List[Dict]):

@@ -29,7 +29,7 @@ class Mentor(User):
 			migrants (List[Migrant]): The list of migrants to add
 		"""
 		i = 0 
-		while len(self.__matches) <= self.max_matches:
+		while len(self.__matches) <= self.max_matches and i < len(migrants):
 			self.__matches.append(migrants[i])
 			i += 1
 
@@ -61,7 +61,7 @@ class Mentor(User):
 		Args:
 			mentor_dict (dict): The dictionary to convert
 		"""
-		
+
 		mentor = Mentor()
 		mentor.set_country(mentor_dict.get("country"))
 		mentor.set_name(mentor_dict.get("name"))
@@ -71,3 +71,5 @@ class Mentor(User):
 		mentor.set_interests(mentor_dict.get("interests"))
 		mentor.set_match(mentor_dict.get("match"))
 		mentor.set_room(mentor_dict.get("room"))
+	
+		return mentor

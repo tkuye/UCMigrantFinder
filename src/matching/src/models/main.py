@@ -2,6 +2,7 @@ import pymongo
 from src.base.matcher import Matcher
 import random
 import string
+import bcrypt
 
 class Database(object):
 	"""
@@ -13,6 +14,7 @@ class Database(object):
 		self._db = self.__init_db(db_name)
 		self.migrants = self._db["migrants"]
 		self.mentors = self._db["mentors"]
+		self.users = self._db["users"]
 		self.matcher = self.__init_matcher()
 		
 	def __init_matcher(self):
@@ -25,6 +27,7 @@ class Database(object):
 		matcher = Matcher()
 		matcher.set_mentors(self.mentors.find())
 		matcher.set_migrants(self.migrants.find())
+		print(matcher.migrants)
 		return matcher
 
 	def __init_db(self, db_name):
@@ -44,7 +47,25 @@ class Database(object):
 		migrant = self.matcher.get_mentor(migrant_id)
 		if migrant is not None:
 			return migrant.to_dict()
+	
+	def create_user(self, username, password):
+		"""Creates a new user with the specified username and password.
+		"""
+		password = password.encode('utf-8')
+		hash_pass = bcrypt.hashpw(password, bcrypt.gensalt(12))
+
+		self.users.insert_one({"username":username, "password":hash_pass})
 		
+		return username
+
+
+	def get_user(self, username, password) -> bool:
+		"""
+		Checks if a user with the specified username and password exists
+		"""
+		user = self.users.find_one({"username":username})
+		return bcrypt.checkpw(password, user.get("password"))
+
 	def get_mentor(self, mentor_id):
 		"""
 			Gets the mentor with a specified id
@@ -81,16 +102,18 @@ class Database(object):
 		Args:
 			migrant_dict (dict): the migrant
 		"""
-		self.migrants.insert_one(migrant_dict)
+		_id = self.migrants.insert_one(migrant_dict)
 		self.matcher.add_migrant(migrant_dict)
+		return str(_id.inserted_id)
 
 	def add_new_mentor(self, mentor_dict:dict):
 		"""
 		Adds a new mentor to the mongo db and matcher system.
 		"""
-		self.mentors.insert_one(mentor_dict)
+		_id = self.mentors.insert_one(mentor_dict)
 
 		self.matcher.add_mentor(mentor_dict)
+		return str(_id.inserted_id)
 
 	def select_mentor(self, mentor_id:str, migrant_id: str):
 		"""
@@ -104,6 +127,13 @@ class Database(object):
 		mentor.set_match(migrant_id)
 
 		self.mentors.update_one(Database.id_query(mentor_id), {"match": migrant_id})
+
+	def get_matched_mentors(self, migrant_id):
+		mentors = []
+		for mentor in self.matcher.mentors.values():
+			if mentor.get_match() == migrant_id:
+				mentors.append(mentor.to_dict())
+		return mentors
 
 	def select_migrant(self, mentor_id, migrant_id):
 		"""
@@ -120,9 +150,11 @@ class Database(object):
 		migrant.set_room(room)
 		mentor.set_room(room)
 		
+
 		self.migrants.update_one(Database.id_query(migrant_id), {"match": mentor_id})
 		self.mentors.update_one(Database.id_query(mentor_id), {"room": room})
 		self.migrants.update_one(Database.id_query(migrant_id), {"room": room})
+		return room 
 
 	@staticmethod
 	def id_query(id:str):

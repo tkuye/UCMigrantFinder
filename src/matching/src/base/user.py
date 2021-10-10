@@ -80,7 +80,8 @@ class User(object):
 		Args:
 			languages (List[str]): languages
 		"""
-		self.__languages = languages.copy()
+		if languages:
+			self.__languages = languages.copy()
 
 	def set_demographics(self, demographics:Dict[str, str]):
 		"""
