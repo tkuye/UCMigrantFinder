@@ -1,0 +1,3 @@
+[console_scripts]
+ucmfinder = src.api.main:main
+
